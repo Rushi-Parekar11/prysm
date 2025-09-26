@@ -1,75 +1,32 @@
 # Stock Portfolio Tracker Component for Prysm finance
-> Frontend-only mini web app for uploading CSV trades, aggregating into portfolio metrics, and visualizing with interactive charts and tables.
 
----
 
-## Quick links
-
-* **Live demo:** `https://your-vercel-deployment.vercel.app` (replace with your URL)
-* **Repo:** `https://github.com/your-username/your-repo` (replace with your repo)
-
----
 
 ## Objective
 
-Build a small, polished frontend app that:
-
-* Accepts a CSV of stock trades
-* Parses and aggregates per-symbol holdings and metrics
-* Shows a portfolio summary, holdings table, and interactive charts
-* Provides filters (sector + date range), search, sorting, and pagination
-* (Bonus) Persists app state to `localStorage` and is responsive
+Build a small, polished frontend app that Accepts a CSV of stock trades Shows a portfolio summary, holdings table, and interactive charts ,Provides filters , search, sorting, and pagination
 
 ---
 
 ## Tech stack
 
-* **Next.js 14+ (App Router)**
-* **TypeScript**
+* **React.js**
+* **JavaScript**
 * **Tailwind CSS**
-* **shadcn/ui** for accessible UI components
-* **Recharts** (or Chart.js) for charts
-* **PapaParse** for robust CSV parsing (optionally custom parser)
+* **Recharts**  for charts
+* **Custom parsing** 
 
 ---
 
 ## Features implemented
 
-1. **Upload & parse CSV** using `papaparse`. Accepts CSV with columns: `symbol,shares,price,date`.
+1. **Upload & parse CSV** using custom parsing
 2. **Aggregation & calculations**
-
-   * Net shares per symbol
-   * Average cost basis per share
-   * Current price (mock data) and current market value
-   * Unrealized gain / loss
 3. **Portfolio Summary**
-
-   * Total portfolio value
-   * Top-performing / worst-performing held symbols (by unrealized %)
-   * Unique symbols held
-4. **Holdings Table** (using shadcn/ui Table)
-
-   * Columns: Symbol, Shares Held, Avg Cost Basis, Current Price, Unrealized Gain/Loss
-   * Sortable by any column
-   * Search with debounce
-   * Pagination (page size default 10)
-5. **Interactive charts** (Recharts)
-
-   * Pie chart: allocation by current value
-   * Line chart: portfolio value over time (simulated by aggregating trade history)
+4. **Holdings Table**
+5. **Interactive charts** 
 6. **Filters**
-
-   * Sector dropdown (mock sector mapping for common tickers)
-   * Date range picker to include/exclude trades
-7. **Persistence**
-
-   * Application state saved to `localStorage` (trades + selected filters + UI state)
 8. **Error handling**
-
-   * Graceful messages for invalid CSV formats and invalid rows
-9. **Responsive design**
-
-   * Mobile-first responsive layout using Tailwind
 
 ---
 
@@ -93,167 +50,38 @@ Notes:
 
 ---
 
-## Mock data & sectors
 
-The app uses a small mock current price map and a mock sector map to power the allocation and sector filters. Replace with real price API calls if desired.
 
-```ts
-const MOCK_PRICES: Record<string, number> = {
-  AAPL: 185.0,
-  TSLA: 210.0,
-  MSFT: 330.0,
-  GOOG: 150.0,
-};
-
-const MOCK_SECTORS: Record<string, string> = {
-  AAPL: 'Technology',
-  MSFT: 'Technology',
-  GOOG: 'Communication Services',
-  TSLA: 'Consumer Discretionary',
-};
-```
-
----
-
-## TypeScript interfaces
-
-```ts
-interface Trade {
-  symbol: string;
-  shares: number;    // positive for buy, negative for sell
-  price: number;     // trade price
-  date: string;      // ISO date string YYYY-MM-DD
-}
-
-interface Holding {
-  symbol: string;
-  shares: number;
-  avgCost: number;
-  currentPrice: number;
-  marketValue: number;
-  unrealized: number; // absolute
-  unrealizedPct: number;
-}
-```
-
----
-
-## App architecture & key modules
-
-* `app/` (Next.js App Router)
-
-  * `page.tsx` — root page, shell and layout
-  * `components/` — smaller UI pieces (Uploader, Table, Charts, Filters)
-  * `lib/parser.ts` — CSV parsing & validation using PapaParse
-  * `lib/portfolio.ts` — aggregation logic: trades → holdings → metrics
-  * `lib/storage.ts` — localStorage helpers (save / load state)
-
-Design decisions:
-
-* Keep parsing and aggregation deterministic and pure — makes it easy to test.
-* UI components stay presentation-only; hooks manage state and persistence.
-* Use `useMemo` to memoize heavy computations (aggregation, sorting).
-* Debounce search input using `use-debounce` hook.
-
----
 
 ## Running locally
 
 1. Clone the repo:
 
 ```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+git clone https://github.com/Rushi-Parekar11/prysm
+cd vite-project
 ```
 
 2. Install dependencies:
 
 ```bash
-pnpm install
-# or npm install
+npm install
 ```
 
 3. Run dev server:
 
 ```bash
-pnpm dev
-# open http://localhost:3000
+npm dev
 ```
 
-4. Build for production:
 
-```bash
-pnpm build && pnpm start
-```
 
 ---
 
 ## Deployment
 
-Deploy the app to **Vercel** (recommended for Next.js App Router). Push your repo and connect to Vercel — the build command is the default Next.js build.
+Deploy the app to **Vercel** . 
 
-**Environment variables (optional)**
-
-* If you add a price provider in future, store the API key in `NEXT_PUBLIC_PRICE_API_KEY`.
 
 ---
 
-## UX notes & keyboard interactions (optional interactive elements)
-
-* Press `/` to focus the search input.
-* `Shift + /` opens help modal.
-* Table rows are focusable with keyboard and support `Enter` to expand a per-symbol detail panel.
-
----
-
-## Validation & error handling
-
-* The CSV parser validates required columns and row data types.
-* Rows with missing or invalid fields are skipped and shown in an "import errors" panel so users can fix them and re-upload.
-
----
-
-## Performance considerations
-
-* Use `useMemo` to avoid recomputing aggregates on every render.
-* Table sorting uses stable in-memory sort and only re-sorts the current page when possible.
-* Large CSVs: sample or chunk parsing via PapaParse streaming to avoid blocking UI.
-
----
-
-## Tests (suggested)
-
-* Unit tests for `lib/portfolio.ts` aggregation logic (Jest + Vitest).
-* Parser tests for malformed CSV rows.
-
----
-
-## Extra features you can add (ideas)
-
-* Real price lookup (Alpaca, IEX Cloud, Yahoo Finance proxy)
-* Export holdings to CSV / Excel
-* Multiple portfolios / named portfolios support
-* IndexedDB persistence with `idb` for large datasets
-* Web worker offload for very large CSV parsing
-
----
-
-## Contribution
-
-PRs welcome. Open issues for feature requests or bugs.
-
----
-
-## License
-
-MIT
-
----
-
-Happy building! If you want, I can:
-
-* Generate the complete Next.js + TypeScript scaffold (components + hooks) for this app.
-* Create example unit tests.
-* Produce a deploy-ready `vercel.json` and GitHub Actions workflow.
-
-Which of the above would you like next?
