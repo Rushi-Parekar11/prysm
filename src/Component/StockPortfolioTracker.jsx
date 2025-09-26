@@ -52,7 +52,7 @@ const StockPortfolioTracker = () => {
       };
 
       if (isNaN(trade.shares) || isNaN(trade.price)) {
-        throw new Error(`Invalid numeric data in row ${i + 1}`);
+        throw new Error(`Invalid values data in row ${i + 1}`);
       }
 
       trades.push(trade);
@@ -181,7 +181,7 @@ const StockPortfolioTracker = () => {
       setPortfolioMetrics(calculateMetrics(calculatedHoldings));
       setTimelineData(calculateTimeline(filteredTrades));
       
-      console.log('Data processed successfully');
+    //  console.log('Data processed ');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error parsing CSV');
     } finally {
@@ -245,13 +245,10 @@ const StockPortfolioTracker = () => {
   }));
 
   return (
+  
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">Stock Portfolio Tracker</h1>
-          <p className="text-gray-600">Upload your trades CSV to analyze your portfolio performance</p>
-        </div>
+
 
         {/* File Upload Card */}
     <div className="rounded-lg border-[#d1d5dc] border shadow-sm bg-gradient-to-r from-[#1d4ed8] to-[#007fff]">
@@ -261,13 +258,7 @@ const StockPortfolioTracker = () => {
                 <Upload className="mx-auto mb-4 h-12 w-12 hover:text-gray-400 text-white" />
                 <label htmlFor="csv-upload" className="cursor-pointer">
                   <span className="text-white hover:font-bold font-medium">Choose CSV file</span>
-                  <input
-                    id="csv-upload"
-                    type="file"
-                    accept=".csv"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
+                  <input id="csv-upload" type="file" accept=".csv" onChange={handleFileUpload} className="hidden"/>
                 </label>
                 <p className="text-white mt-1 text-sm">
               Upload your trade data CSV file 
@@ -290,6 +281,8 @@ const StockPortfolioTracker = () => {
 
         {portfolioMetrics && (
           <>
+              <h1 className='text-2xl font-bold'>Portfolio Summary</h1>
+
             {/* Portfolio Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-white rounded-lg border-[#d1d5dc] border shadow-sm">
@@ -393,12 +386,13 @@ const StockPortfolioTracker = () => {
                 </div>
               </div>
             </div>
+              <h1 className='text-2xl font-bold'>Holdings Table</h1>
 
             {/* Holdings Table */}
             <div className="bg-white rounded-lg border-[#d1d5dc] border shadow-sm">
               <div className="p-6 border-b border-[#d1d5dc]">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
-                  Holdings
+                  Total Holdings
                   <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
                     {filteredAndSortedHoldings.length}
                   </span>
@@ -542,14 +536,11 @@ const StockPortfolioTracker = () => {
         {!portfolioMetrics && !isLoading && (
           <div className="bg-white rounded-lg border-[#d1d5dc] border shadow-sm">
             <div className="flex flex-col items-center justify-center py-16 px-6">
-              <Upload className="h-16 w-16 text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Upload a CSV file to get started</h3>
-              <p className="text-gray-600 text-center">
-                Sample CSV format:<br />
+              <h3 className="text-xl font-semibold mb-2">Upload a CSV file Format Only</h3>
+              <p className="text-gray-600 text-center">Sample CSV format<br />
                 symbol,shares,price,date<br />
                 AAPL,10,172.35,2024-06-12<br />
                 TSLA,5,225.40,2024-06-13<br />
-                Current prices are calculated from your most recent trades
               </p>
             </div>
           </div>
